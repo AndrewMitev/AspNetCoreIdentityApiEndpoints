@@ -23,10 +23,9 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-builder.Services.AddOptions<DbOptions>().Configure<IConfiguration>((settings, configuration) => 
-{
-    settings.ConnectionString = configuration["ConnectionString"] ?? string.Empty;
-});
+builder.Services.AddOptions<DbOptions>()
+    .Bind(builder.Configuration.GetSection(nameof(DbOptions)));
+
 builder.Services.AddDbContext<DataContext>((serviceProvider, options) => 
 {
     var dbOptions = serviceProvider.GetRequiredService<IOptions<DbOptions>>();

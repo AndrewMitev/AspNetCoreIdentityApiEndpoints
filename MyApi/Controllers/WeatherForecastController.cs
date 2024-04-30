@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -15,12 +14,10 @@ namespace MyApi.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly UserManager<MyUser> userManager;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, UserManager<MyUser> userManager)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
-            this.userManager = userManager;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -34,16 +31,6 @@ namespace MyApi.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task RegisterAsAthlete()
-        { 
-            var user = this.HttpContext.User?.Identity?.Name ?? string.Empty;
-            var loggedInUser = await this.userManager.FindByEmailAsync(user);
-            
-            var result = await this.userManager.AddToRoleAsync(loggedInUser, RoleConstants.Athlete);
         }
     }
 }
